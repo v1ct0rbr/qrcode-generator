@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/style.css">
+    <title>Gerador de QRCode</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }        
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            width: 80%;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gerador de QRCode</h1>
+    
+    <input type="text" id="qrtext" placeholder="Digite o texto ou URL" value="https://www.example.com">
+    <button onclick="generateQRCode()">Gerar QRCode</button>
+    
+    <div id="qrcode"></div>
+
+    <script>
+        // Função para gerar o QRCode
+        function generateQRCode() {
+            const text = document.getElementById('qrtext').value.trim();
+            
+            if (!text) {
+                alert('Por favor, digite algum texto ou URL');
+                return;
+            }
+
+            // Limpa o QRCode anterior
+            document.getElementById('qrcode').innerHTML = '';
+            
+            // Cria novo QRCode
+            new QRCode(document.getElementById('qrcode'), {
+                text: text,
+                width: 100,
+                height: 100,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
+
+        // Gera um QRCode inicial ao carregar a página
+        window.onload = generateQRCode;
+    </script>
+    
+    <!-- Inclui a biblioteca QRCode -->
+    <script src="assets/qrcode.js"></script>
+</body>
+</html>

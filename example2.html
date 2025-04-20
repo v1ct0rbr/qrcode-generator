@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerador de QRCode Avançado</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { display: flex; flex-wrap: wrap; gap: 20px; }
+        .controls { flex: 1; min-width: 300px; }
+        .output { flex: 1; min-width: 300px; text-align: center; display: flex; align-items: center; }
+        #qrcode { margin: 20px auto; border: 1px solid #ddd; }
+        input, select, button { margin: 5px 0; width: 100%; }
+        button { background-color: #4285f4; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #3367d6; }
+        label { display: block; margin-top: 10px; }
+        h1 { text-align: center; color: #4285f4; }
+    </style>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <h1>Gerador de QRCode Avançado</h1>
+    
+    <div class="container">
+        <div class="controls">
+            <label for="qrtext">Conteúdo:</label>
+            <input type="text" id="qrtext" placeholder="Texto, URL, etc." value="https://www.google.com">
+            
+            <label for="qrsize">Tamanho (px):</label>
+            <input type="number" id="qrsize" value="256" min="100" max="1000">
+            
+            <label for="qrcolor">Cor Escura:</label>
+            <input type="color" id="qrcolor" value="#000000">
+            
+            <label for="qrbgcolor">Cor Clara:</label>
+            <input type="color" id="qrbgcolor" value="#ffffff">
+            
+            <label for="qrlevel">Nível de Correção:</label>
+            <select id="qrlevel">
+                <option value="L">Baixo (7%)</option>
+                <option value="M">Médio (15%)</option>
+                <option value="Q">Quartil (25%)</option>
+                <option value="H" selected>Alto (30%)</option>
+            </select>
+            
+            <button onclick="generateCustomQRCode()">Gerar QRCode</button>
+            <button onclick="downloadQRCode()">Download QRCode</button>
+        </div>
+        
+        <div class="output">
+            <div id="qrcode"></div>
+            <canvas id="qrcanvas" style="display:none;"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let currentQRCode = null;
+        
+        function generateCustomQRCode() {
+            const text = document.getElementById('qrtext').value.trim();
+            const size = parseInt(document.getElementById('qrsize').value);
+            const color = document.getElementById('qrcolor').value;
+            const bgColor = document.getElementById('qrbgcolor').value;
+            const level = document.getElementById('qrlevel').value;
+            
+            if (!text) {
+                alert('Por favor, digite algum conteúdo para o QRCode');
+                return;
+            }
+
+            document.getElementById('qrcode').innerHTML = '';
+            
+            currentQRCode = new QRCode(document.getElementById('qrcode'), {
+                text: text,
+                width: size,
+                height: size,
+                colorDark: color,
+                colorLight: bgColor,
+                correctLevel: QRCode.CorrectLevel[level]
+            });
+        }
+
+        function downloadQRCode() {
+            if (!currentQRCode) {
+                alert('Gere um QRCode primeiro');
+                return;
+            }
+            
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) {
+                alert('Não foi possível gerar a imagem para download');
+                return;
+            }
+            
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Gera um QRCode inicial
+        window.onload = generateCustomQRCode;
+    </script>
+    
+    <script src="assets/qrcode.js"></script>
+</body>
+</html>
